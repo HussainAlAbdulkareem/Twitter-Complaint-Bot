@@ -38,10 +38,19 @@ class InternetSpeedTwitterBot:
         email_field.send_keys(Keys.ENTER)
 
         time.sleep(2)
+
         password_field = self.driver.find_element(By.NAME, "password")
         password_field.send_keys(os.getenv("XPASS"))
         password_field.send_keys(Keys.ENTER)
 
+        time.sleep(5)
+        self.driver.find_element(By.XPATH, '//*[@id="react-root"]/div/div/div[2]/header/div/div/div/div[1]/div[3]/a').click()
+        time.sleep(1)
+        text_box = self.driver.find_element(By.CLASS_NAME, "public-DraftEditor-content")
+        text_box.send_keys(f"Hey, @comcast why is my internet speed {self.down}down/{self.up}up when I'm paying for more than that?")
+        self.driver.find_element(By.XPATH, '//*[@id="layers"]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div/div[3]/div[2]/div[1]/div/div/div/div[2]/div[2]/div/div/div/button[2]').click()
 
 bot = InternetSpeedTwitterBot()
-bot.tweet_at_internet_provider()
+bot.get_internet_speed()
+if bot.down < PROMISED_DOWN or bot.up < PROMISED_UP:
+    bot.tweet_at_internet_provider()
