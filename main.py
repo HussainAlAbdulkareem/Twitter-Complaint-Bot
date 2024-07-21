@@ -1,4 +1,6 @@
+import os
 from selenium import webdriver
+from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -24,10 +26,22 @@ class InternetSpeedTwitterBot:
         WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.CLASS_NAME, "start-text"))).click()
         #Wait for the evaluation to be finished
         time.sleep(45)
-        self.down = self.driver.find_element(By.CLASS_NAME, "download-speed").text
-        self.up = self.driver.find_element(By.CLASS_NAME, "upload-speed").text
+        self.down = float(self.driver.find_element(By.CLASS_NAME, "download-speed").text)
+        self.up = float(self.driver.find_element(By.CLASS_NAME, "upload-speed").text)
         return self.down, self.up
+
+    def tweet_at_internet_provider(self):
+        self.driver.get("https://x.com/i/flow/login")
+        time.sleep(2)
+        email_field = self.driver.find_element(By.NAME, "text")
+        email_field.send_keys(os.getenv("XEMAIL"))
+        email_field.send_keys(Keys.ENTER)
+
+        time.sleep(2)
+        password_field = self.driver.find_element(By.NAME, "password")
+        password_field.send_keys(os.getenv("XPASS"))
+        password_field.send_keys(Keys.ENTER)
 
 
 bot = InternetSpeedTwitterBot()
-print(bot.get_internet_speed())
+bot.tweet_at_internet_provider()
